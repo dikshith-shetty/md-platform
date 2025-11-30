@@ -2,7 +2,7 @@ spring:
   application:
     name: md-collector-binance
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: localhost:9093
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
@@ -10,10 +10,13 @@ spring:
 md:
   collector:
     binance:
-      # Map binance stream symbols (lowercase, no @) to internal symbols
       symbols:
-        btcusdt: BTCUSD
+        btcusdt: BTC-USD
+        ethusdt: ETH-USD
+        solusdt: SOL-USD
+        bnbusdt: BNB-USD
       reconnectDelaySeconds: 5
+      wsBase: wss://stream.binance.com:9443/ws
 
 management:
   tracing:

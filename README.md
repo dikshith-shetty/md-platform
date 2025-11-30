@@ -11,11 +11,11 @@ This repository contains a modular **market data pipeline** built using **Java 1
 | **md-collector-binance** | Connects to Binance WebSocket @bookTicker stream, normalizes bid/ask events using exchange timestamps, publishes to Kafka. |
 | **md-collector-simulator** | Generates synthetic bid/ask events for development and load testing. |
 | **md-aggregator** | Consumes normalized events, buckets them into candles (configurable intervals), stores in TimescaleDB. |
-| **md-analytics** | Exposes REST API (**/history**) to fetch OHLCV candle data. |
+| **md-analytics** | Exposes REST API to fetch OHLCV candle data. |
 | **md-analytics-client** | Feign client jar to integrate analytics APIs in other services. |
 | **md-load-test** | CLI tool to load-test md-analytics API for latency & throughput. |
 | **config-server** | Spring Cloud Config Server for centralized configuration. |
-| **md-common** | Shared models (records), configs, DTOs. |
+| **md-common** | Shared models, configs, DTOs. |
 
 ---
 

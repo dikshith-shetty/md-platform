@@ -1,0 +1,4 @@
+management:
+  otlp:
+    tracing:
+      endpoint: http://otel-collector:4317

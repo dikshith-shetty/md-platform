@@ -6,10 +6,12 @@ import com.rc.md.collector.binance.config.BinanceCollectorProperties;
 import com.rc.md.common.model.BidAskEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
+
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.WebSocket;
@@ -24,8 +26,8 @@ import java.util.concurrent.Executors;
 @Component
 public class BinanceWebSocketService {
 
-    private static final String BINANCE_WS_BASE = "wss://stream.binance.com:9443/ws";
-    private static final String TOPIC = "md.bidask.normalized";
+    @Value("${topics.normalized:md.bidask.normalized}")
+    private String topic;
 
     private final BinanceCollectorProperties properties;
     private final KafkaTemplate<String, String> kafkaTemplate;
@@ -35,11 +37,10 @@ public class BinanceWebSocketService {
     private final ExecutorService executor;
 
     public BinanceWebSocketService(BinanceCollectorProperties properties,
-                                   KafkaTemplate<String, String> kafkaTemplate,
-                                   ObjectMapper objectMapper) {
+                                   KafkaTemplate<String, String> kafkaTemplate) {
         this.properties = properties;
         this.kafkaTemplate = kafkaTemplate;
-        this.objectMapper = objectMapper;
+        this.objectMapper = new ObjectMapper();
         this.httpClient = HttpClient.newHttpClient();
         this.executor = Executors.newCachedThreadPool();
     }
@@ -64,7 +65,7 @@ public class BinanceWebSocketService {
         int delay = Math.max(properties.getReconnectDelaySeconds(), 1);
         while (true) {
             try {
-                String url = BINANCE_WS_BASE + "/" + stream;
+                String url = properties.getWsBase() + "/" + stream;
                 log.info("Connecting to Binance stream {} as internal symbol {}", url, internalSymbol);
 
                 WebSocket ws = httpClient.newWebSocketBuilder()
@@ -73,7 +74,7 @@ public class BinanceWebSocketService {
 
                 // Block until completion; listener handles lifecycle.
                 // When onError/onClose is called, we break and reconnect.
-                // We just wait here to avoid tight loop.
+                // We just wait here to avoid a tight loop.
                 synchronized (ws) {
                     ws.wait();
                 }
@@ -139,18 +140,20 @@ public class BinanceWebSocketService {
                 double bid = Double.parseDouble(bidNode.asText());
                 double ask = Double.parseDouble(askNode.asText());
                 JsonNode timeNode = node.get("T"); // Binance event time in ms
-long ts;
-if (timeNode != null && !timeNode.isNull()) {
-    ts = timeNode.asLong() / 1000;  // convert ms → sec
-} else {
-    ts = Instant.now().getEpochSecond(); // fallback
-}
+                long ts;
+                if (timeNode != null && !timeNode.isNull()) {
+                    ts = timeNode.asLong() / 1000;  // convert ms → sec
+                } else {
+                    ts = Instant.now().getEpochSecond(); // fallback
+                }
 
                 BidAskEvent event = new BidAskEvent(internalSymbol, bid, ask, ts);
                 String payload = objectMapper.writeValueAsString(event);
 
+                log.info("Sending message to Kafka: {}", payload);
+
                 ProducerRecord<String, String> record =
-                        new ProducerRecord<>(TOPIC, internalSymbol, payload);
+                        new ProducerRecord<>(topic, internalSymbol, payload);
 
                 kafkaTemplate.send(record);
             } catch (Exception e) {

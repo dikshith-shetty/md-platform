@@ -9,6 +9,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
+      jdbc:
+        time_zone: UTC
     show-sql: true
 
 md:

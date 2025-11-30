@@ -4,12 +4,17 @@ server:
 spring:
   application:
     name: md-config-server
+  profiles:
+    active: native
   cloud:
     config:
       server:
-        git:
-          uri: file:///tmp/md-config
+        native:
+          search-locations: file:///config-repo
 
+logging:
+  level:
+    org.springframework.cloud.config: DEBUG
 
 management:
   tracing:

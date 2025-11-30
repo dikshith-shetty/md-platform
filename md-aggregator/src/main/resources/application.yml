@@ -9,6 +9,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+      jdbc:
+        time_zone: UTC
     show-sql: false
   kafka:
     bootstrap-servers: localhost:9093
@@ -29,12 +31,3 @@ md:
         seconds: 5
       - id: "5m"
         seconds: 300
-
-
-management:
-  tracing:
-    sampling:
-      probability: 1.0
-  otlp:
-    tracing:
-      endpoint: http://localhost:4317

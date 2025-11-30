@@ -227,7 +227,7 @@ This is a **system-level load harness**, not a unit test.
 - **Language:** Java 17
 - **Framework:** Spring Boot 3.x
 - **Messaging:** Apache Kafka (Confluent images for local dev)
-- **Database:** TimescaleDB (PostgreSQL 14-based)
+- **Database:** TimescaleDB (PostgreSQL)
 - **Config:** Spring Cloud Config Server (planned to externalize app configs)
 - **Client:** Spring Cloud OpenFeign (`md-analytics-client`)
 - **Logging:** Logback + Lombok `@Slf4j`

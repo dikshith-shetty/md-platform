@@ -1,0 +1,16 @@
+intervals:  &intervals
+  - id: "1m"
+    seconds: 60
+  - id: "1s"
+    seconds: 1
+  - id: "5s"
+    seconds: 5
+  - id: "5m"
+    seconds: 300
+
+
+md:
+  aggregator:
+    intervals: *intervals
+  analytics:
+    intervals: *intervals

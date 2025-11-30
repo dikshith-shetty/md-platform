@@ -16,8 +16,6 @@ md:
         SOL-USD: 135
         BNB-USD: 870
       workerThreads: 4
-      topicName: md.bidask.normalized
-
 
 management:
   tracing:

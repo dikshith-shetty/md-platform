@@ -1,9 +1,7 @@
-version: '3.9'
-
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
-    container_name: md-zookeeper
+    container_name: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -14,7 +12,7 @@ services:
 
   kafka:
     image: confluentinc/cp-kafka:7.5.0
-    container_name: md-kafka
+    container_name: kafka
     depends_on:
       - zookeeper
     ports:
@@ -34,7 +32,7 @@ services:
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
-    container_name: md-kafka-ui
+    container_name: kafka-ui
     depends_on:
       - kafka
     ports:
@@ -47,7 +45,7 @@ services:
       - md-net
 
   kafka-init:
-    image: bitnami/kafka:latest
+    image: confluentinc/cp-kafka:7.5.0
     container_name: kafka-init
     depends_on:
       kafka:
@@ -59,32 +57,38 @@ services:
     command: [ "/usr/bin/kafka-init.sh" ]
 
   timescaledb:
-    image: timescale/timescaledb:latest-pg14
-    container_name: md-timescaledb
+    image: timescale/timescaledb:latest-pg16
+    container_name: timescaledb
     environment:
       POSTGRES_DB: md_db
       POSTGRES_USER: md_user
       POSTGRES_PASSWORD: md_password
     ports:
       - "5432:5432"
+    volumes:
+      # Host mount for initialization scripts (Run once)
+      - ./db-init.sql:/docker-entrypoint-initdb.d/init.sql
+      # Named volume for persistent data
+      # uncomment below line to persit the db data
+      #- md_data:/var/lib/postgresql/data
     networks:
       - md-net
 
   otel-collector:
     image: otel/opentelemetry-collector-contrib:0.108.0
-    container_name: md-otel-collector
+    container_name: otel-collector
     command: ["--config=/etc/otel-collector-config.yml"]
     volumes:
       - ./otel-collector-config.yml:/etc/otel-collector-config.yml:ro
     ports:
       - "4317:4317"   # OTLP gRPC
-      - "4318:4318"   # OTLP HTTP (optional)
+      - "4318:4318"   # OTLP HTTP
     networks:
       - md-net
 
   jaeger:
     image: jaegertracing/all-in-one:1.57
-    container_name: md-jaeger
+    container_name: jaeger
     ports:
       - "16686:16686"   # UI
       - "14250:14250"   # OTLP gRPC
@@ -93,6 +97,82 @@ services:
     networks:
       - md-net
 
+  md-config-server:
+    build:
+      context: ../md-config-server
+      dockerfile: Dockerfile
+    container_name: md-config-server
+    ports:
+      - "8888:8888"
+    environment:
+      SPRING_PROFILES_ACTIVE: native,docker
+    volumes:
+      - ../config-repo:/config-repo
+    networks:
+      - md-net
+
+  md-collector-simulator:
+    build:
+      context: ../md-collector-simulator
+      dockerfile: Dockerfile
+    container_name: md-collector-simulator
+    depends_on:
+      md-config-server:
+        condition: service_started
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://md-config-server:8888"
+    networks:
+      - md-net
+
+  md-collector-binance:
+    build:
+      context: ../md-collector-binance
+      dockerfile: Dockerfile
+    container_name: md-collector-binance
+    depends_on:
+      md-config-server:
+        condition: service_started
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://md-config-server:8888"
+    networks:
+      - md-net
+
+  md-aggregator:
+    build:
+      context: ../md-aggregator
+      dockerfile: Dockerfile
+    container_name: md-aggregator
+    depends_on:
+      md-config-server:
+        condition: service_started
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://md-config-server:8888"
+    networks:
+      - md-net
+
+  md-analytics:
+    build:
+      context: ../md-analytics
+      dockerfile: Dockerfile
+    container_name: md-analytics
+    depends_on:
+      md-config-server:
+        condition: service_started
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://md-config-server:8888"
+    ports:
+      - "8080:8080"
+    networks:
+      - md-net
+
 networks:
   md-net:
     driver: bridge
+
+# uncomment the below line to persist the db data
+#volumes:
+ # md_data:

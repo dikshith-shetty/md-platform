@@ -33,8 +33,7 @@ private final ObjectMapper objectMapper;
     }
 
     @KafkaListener(
-            topics = "md.bidask.normalized",
-            groupId = "md-aggregator"
+            topics = "${topics.normalized:md.bidask.normalized}"
     )
     @Transactional
     public void onMessage(ConsumerRecord<String, String> record) {
@@ -84,9 +83,8 @@ private final ObjectMapper objectMapper;
 
         candleRepository.save(candle);
 
-        if (log.isDebugEnabled()) {
-            log.debug("Updated candle symbol={} interval={} bucket={} close={} volume={}",
-                    symbol, sec, bucketStart, candle.getClose(), candle.getVolume());
-        }
+        log.debug("Updated candle symbol={} interval={} bucket={} close={} volume={}",
+                symbol, sec, bucketStart, candle.getClose(), candle.getVolume());
+
     }
 }

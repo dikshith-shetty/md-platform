@@ -10,6 +10,9 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
+  cloud:
+    config:
+      enabled: false
 
   kafka:
     bootstrap-servers: ${spring.embedded.kafka.brokers}

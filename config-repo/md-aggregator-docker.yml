@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://timescaledb:5432/md_db
+  config:
+    import:
+      - optional:intervals.yml
+      - optional:kafka.yml
+

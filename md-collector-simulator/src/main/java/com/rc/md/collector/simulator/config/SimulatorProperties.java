@@ -15,6 +15,5 @@ public class SimulatorProperties {
     private Map<String, Double> symbols;
     private int targetRatePerSymbol;
     private int workerThreads;
-    private String topicName;
 
 }

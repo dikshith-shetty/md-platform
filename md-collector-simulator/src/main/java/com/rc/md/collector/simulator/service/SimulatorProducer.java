@@ -23,7 +23,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @Component
 public class SimulatorProducer {
 
-    @Value( "${md.collector.simulator.topic:md.bidask.normalized}")
+    @Value( "${topics.normalized:md.bidask.normalized}")
     private String topic;
 
     private final SimulatorProperties properties;

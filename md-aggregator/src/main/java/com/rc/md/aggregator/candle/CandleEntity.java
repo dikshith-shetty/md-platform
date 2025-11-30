@@ -1,22 +1,27 @@
 package com.rc.md.aggregator.candle;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.OffsetDateTime;
 
-@Setter
-@Getter
+
 @Entity
 @Table(name = "candles")
+@IdClass(CandleId.class)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CandleEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     private String symbol;
+
+    @Id
     private Integer intervalSec;
+
+    @Id
     private OffsetDateTime bucketStart;
+
     private double open;
     private double high;
     private double low;
