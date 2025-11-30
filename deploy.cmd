@@ -32,6 +32,8 @@ echo.
 :: --build: Forces a rebuild of images (needed for fresh JARs).
 :: --force-recreate: Ensures new containers are created from the new images.
 :: -d: Runs services in detached (background) mode.
+call docker compose -f infra/docker-compose-infra.yml up -d --build --force-recreate
+call timeout /t 30 /nobreak
 call docker compose -f infra/docker-compose.yml up -d --build --force-recreate
 
 :: Check the exit code of the last command (docker compose).
