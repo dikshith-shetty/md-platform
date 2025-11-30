@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: md-collector-simulator
+  kafka:
+    bootstrap-servers: localhost:9093
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+md:
+  collector:
+    simulator:
+      symbols:
+        BTC-USD: 90000
+        ETH-USD: 3000
+        SOL-USD: 135
+        BNB-USD: 870
+      workerThreads: 4
+      topicName: md.bidask.normalized
+
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  otlp:
+    tracing:
+      endpoint: http://localhost:4317

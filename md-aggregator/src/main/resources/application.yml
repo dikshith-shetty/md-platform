@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: md-aggregator
+  datasource:
+    url: jdbc:postgresql://localhost:5432/md_db
+    username: md_user
+    password: md_password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+  kafka:
+    bootstrap-servers: localhost:9093
+    consumer:
+      group-id: md-aggregator
+      auto-offset-reset: latest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+md:
+  aggregator:
+    intervals:
+      - id: "1m"
+        seconds: 60
+      - id: "1s"
+        seconds: 1
+      - id: "5s"
+        seconds: 5
+      - id: "5m"
+        seconds: 300
+
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  otlp:
+    tracing:
+      endpoint: http://localhost:4317

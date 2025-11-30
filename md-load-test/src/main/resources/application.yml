@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: md-load-test
+
+md:
+  analytics:
+    base-url: http://localhost:8080  # adjust if md-analytics runs on a different port
+
+md:
+  load:
+    threads: 10
+    requestsPerThread: 100
+    symbol: BTCUSD
+    interval: 1m
+    from: 1700000000
+    to: 1700000600
+    verboseErrors: false
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  otlp:
+    tracing:
+      endpoint: http://localhost:4317
