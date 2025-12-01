@@ -1,4 +1,13 @@
 services:
+  kafka-init:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka-init
+    volumes:
+      - ./kafka-init.sh:/usr/bin/kafka-init.sh
+    networks:
+      - md-net
+    command: [ "/usr/bin/kafka-init.sh" ]
+
   md-collector-simulator:
     build:
       context: ../md-collector-simulator

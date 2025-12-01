@@ -29,7 +29,7 @@ For run instructions, see: [**Read Me**](../README.md)
 
 - `com.rc.md.common.model`
   - `public record BidAskEvent(String symbol, double bid, double ask, long timestamp) {}`
-    - `symbol`: normalized symbol (e.g., `BTCUSD`)
+    - `symbol`: normalized symbol (e.g., `BTC-USD`)
     - `bid`, `ask`: double best bid/ask
     - `timestamp`: UNIX seconds, typically exchange event time
   - `public record Candle(long time, double open, double high, double low, double close, long volume) {}`
@@ -97,7 +97,7 @@ For run instructions, see: [**Read Me**](../README.md)
     collector:
       binance:
         symbols:
-          btcusdt: BTCUSD
+          btcusdt: BTC-USD
         reconnectDelaySeconds: 5
   ```
 
@@ -118,7 +118,7 @@ For run instructions, see: [**Read Me**](../README.md)
   Responsibilities:
 
   - On startup (`@PostConstruct`), read `symbols` map.
-  - For each entry (e.g., `btcusdt -> BTCUSD`):
+  - For each entry (e.g., `btcusdt -> BTC-USD`):
     - Build stream name: `btcusdt@bookTicker`
     - Submit a task to an `ExecutorService` to manage WebSocket connection loop.
 
@@ -473,7 +473,7 @@ md:
   public class LoadTestProperties {
       private int threads = 10;
       private int requestsPerThread = 100;
-      private String symbol = "BTCUSD";
+      private String symbol = "BTC-USD";
       private String interval = "1m";
       private long from = 1_700_000_000L;
       private long to = 1_700_000_600L;
@@ -509,7 +509,7 @@ md:
 ### 3.1 Topic: `md.bidask.normalized`
 
 - **Purpose:** Single, normalized source of truth for real-time bid/ask events.
-- **Key:** `symbol` (e.g., `BTCUSD`).
+- **Key:** `symbol` (e.g., `BTC-USD`).
 - **Value:** JSON string representing `BidAskEvent`.
 - **Producer(s):**
   - `md-collector-binance`

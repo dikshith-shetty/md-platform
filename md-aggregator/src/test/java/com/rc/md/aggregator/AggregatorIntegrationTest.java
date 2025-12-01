@@ -42,7 +42,7 @@ class AggregatorIntegrationTest {
     @Test
     void shouldAggregateBidAskIntoOneMinuteCandle() throws Exception {
         // given
-        String symbol = "BTCUSD";
+        String symbol = "BTC-USD";
         long ts = 1_700_000_060L; // arbitrary unix seconds
         double bid = 100.0;
         double ask = 102.0;

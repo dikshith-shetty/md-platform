@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-public class HistoryController {
+public class HistoryController  {
 
     private final CandleRepository candleRepository;
     private final IntervalConfig intervalConfig;
@@ -32,9 +32,9 @@ public class HistoryController {
             summary = "Get historical candles",
             description = "Returns OHLCV candles for a symbol and interval in a given time range."
     )
-    @GetMapping("/history")
+    @GetMapping("/api/v1/history")
     public HistoryResponse getHistory(
-            @Parameter(description = "Symbol, e.g. BTCUSD")
+            @Parameter(description = "Symbol, e.g. BTC-USD")
             @RequestParam("symbol") String symbol,
             @Parameter(description = "Interval id, e.g. 1m")
             @RequestParam("interval") String intervalId,

@@ -71,7 +71,7 @@ This document describes the **high-level architecture** like components, data fl
 
      ```yaml
      md.collector.binance.symbols:
-       btcusdt: BTCUSD
+       btcusdt: BTC-USD
      ```
 
    - Publishes serialized `BidAskEvent` (JSON) to:

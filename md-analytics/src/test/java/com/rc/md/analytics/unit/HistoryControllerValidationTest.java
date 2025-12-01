@@ -38,8 +38,8 @@ class HistoryControllerValidationTest {
 
     @Test
     void returnsErrorWhenFromGreaterThanTo() throws Exception {
-        mockMvc.perform(get("/history")
-                        .param("symbol", "BTCUSD")
+        mockMvc.perform(get("/api/v1/history")
+                        .param("symbol", "BTC-USD")
                         .param("interval", "1m")
                         .param("from", "100")
                         .param("to", "50"))
@@ -49,8 +49,8 @@ class HistoryControllerValidationTest {
 
     @Test
     void returnsErrorWhenIntervalUnsupported() throws Exception {
-        mockMvc.perform(get("/history")
-                        .param("symbol", "BTCUSD")
+        mockMvc.perform(get("/api/v1/history")
+                        .param("symbol", "BTC-USD")
                         .param("interval", "5m")
                         .param("from", "0")
                         .param("to", "100"))

@@ -8,6 +8,8 @@ mvn clean package -DskipTests
 
 # --- 2. Docker Compose (Build Images & Start Services) ---
 echo "--- 2. Building Images and Starting Infrastructure/Applications ---"
+docker compose -f infra/docker-compose-infra.yml down
+docker compose -f infra/docker-compose.yml down
 docker compose -f infra/docker-compose-infra.yml up -d --build --force-recreate
 sleep 30
 docker compose -f infra/docker-compose.yml up -d --build --force-recreate

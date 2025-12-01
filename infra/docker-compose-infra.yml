@@ -44,18 +44,6 @@ services:
     networks:
       - md-net
 
-  kafka-init:
-    image: confluentinc/cp-kafka:7.5.0
-    container_name: kafka-init
-    depends_on:
-      kafka:
-        condition: service_started
-    volumes:
-      - ./kafka-init.sh:/usr/bin/kafka-init.sh
-    networks:
-      - md-net
-    command: [ "/usr/bin/kafka-init.sh" ]
-
   timescaledb:
     image: timescale/timescaledb:latest-pg16
     container_name: timescaledb

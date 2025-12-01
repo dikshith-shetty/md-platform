@@ -1,7 +1,11 @@
 package com.rc.md.loadtest;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+@Getter
+@Setter
 @ConfigurationProperties(prefix = "md.load")
 public class LoadTestProperties {
 
@@ -16,9 +20,9 @@ public class LoadTestProperties {
     private int requestsPerThread = 100;
 
     /**
-     * Symbol to query, e.g. BTCUSD.
+     * Symbol to query, e.g. BTC-USD.
      */
-    private String symbol = "BTCUSD";
+    private String symbol = "BTC-USD";
 
     /**
      * Interval id to query, e.g. 1m.
@@ -28,30 +32,16 @@ public class LoadTestProperties {
     /**
      * From timestamp (UNIX seconds).
      */
-    private long from = 1_700_000_000L;
+    private long from = 1764470000;
 
     /**
      * To timestamp (UNIX seconds).
      */
-    private long to = 1_700_000_600L;
+    private long to = 1764480000;
 
     /**
      * Whether to print each error in detail.
      */
     private boolean verboseErrors = false;
 
-    public int getThreads() { return threads; }
-    public void setThreads(int threads) { this.threads = threads; }
-    public int getRequestsPerThread() { return requestsPerThread; }
-    public void setRequestsPerThread(int requestsPerThread) { this.requestsPerThread = requestsPerThread; }
-    public String getSymbol() { return symbol; }
-    public void setSymbol(String symbol) { this.symbol = symbol; }
-    public String getInterval() { return interval; }
-    public void setInterval(String interval) { this.interval = interval; }
-    public long getFrom() { return from; }
-    public void setFrom(long from) { this.from = from; }
-    public long getTo() { return to; }
-    public void setTo(long to) { this.to = to; }
-    public boolean isVerboseErrors() { return verboseErrors; }
-    public void setVerboseErrors(boolean verboseErrors) { this.verboseErrors = verboseErrors; }
 }

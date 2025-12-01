@@ -61,7 +61,7 @@ class HistoryControllerIntegrationTest {
 
     @Test
     void historyEndpointReturnsExpectedCandleData() throws Exception {
-        String symbol = "BTCUSD";
+        String symbol = "BTC-USD";
         int intervalSec = 60;
         long bucketSec = 1_700_000_000L;
         OffsetDateTime bucketStart = OffsetDateTime.ofInstant(
@@ -81,7 +81,7 @@ class HistoryControllerIntegrationTest {
         long from = bucketSec - 60;
         long to = bucketSec + 60;
 
-        mockMvc.perform(get("/history")
+        mockMvc.perform(get("/api/v1/history")
                         .param("symbol", symbol)
                         .param("interval", "1m")
                         .param("from", String.valueOf(from))
